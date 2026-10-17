@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>JOE STORE | متجر جو الإلكتروني</title>
+  
+  <!-- Tailwind CSS Framework CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Cairo Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* كود تصميم احتياطي يضمن عدم ظهور الشاشة السوداء نهائياً حتى قبل تحميل مكتبات الإنترنت */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #09090b;
+      color: #f4f4f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body class="bg-[#09090b] text-[#f4f4f5] min-h-screen flex flex-col justify-between">
+
+  <!-- هيدر المتجر -->
+  <header class="sticky top-0 z-40 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800 px-4 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchPage('products')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-green-600 to-emerald-400 flex items-center justify-center font-black text-black text-xl shadow-lg">
+          J
+        </div>
+        <div>
+          <h1 class="text-xl font-black tracking-wider text-white">JOE <span class="text-green-500">STORE</span></h1>
+          <p class="text-[10px] text-zinc-400">التسوق السريع والآمن</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="switchPage('products')" id="nav-btn-products" class="px-3 py-2 rounded-xl text-xs font-bold bg-green-500 text-black">
+          <i class="fa-solid fa-store ml-1"></i> المنتجات
+        </button>
+        <button onclick="switchPage('checkout')" class="relative bg-zinc-900 hover:bg-zinc-800 text-white px-3.5 py-2 rounded-xl border border-zinc-800 flex items-center gap-2">
+          <i class="fa-solid fa-cart-shopping text-green-500"></i>
+          <span class="text-xs font-bold">السلة</span>
+          <span id="nav-cart-badge" class="bg-green-500 text-black text-[10px] font-black rounded-full w-4 h-4 flex items-center justify-center">0</span>
+        </button>
+        <button onclick="switchPage('admin')" class="px-3 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white">
+          <i class="fa-solid fa-user-shield"></i> الإدارة
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- محتوى الصفحات الأساسي -->
+  <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full">
+
+    <!-- صفحة المنتجات -->
+    <section id="page-products" class="space-y-6">
+      <div class="bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900 p-6 rounded-2xl border border-zinc-800 shadow-xl">
+        <span class="px-3 py-1 bg-green-500/10 text-green-500 border border-green-500/20 rounded-full text-xs font-semibold">
+          <i class="fa-solid fa-bolt ml-1"></i> الشحن السريع لكافة المحافظات (150 ج.م)
+        </span>
+        <h2 class="text-2xl font-black text-white mt-3">تصفح أحدث المنتجات</h2>
+        <p class="text-zinc-400 text-xs mt-1">اختر ما يناسبك وأضفه للسلة لإتمام الطلب فوراً عبر الواتساب.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="products-grid">
+        <!-- يتم تعبئة المنتجات هنا تلقائياً -->
+      </div>
+    </section>
+
+    <!-- صفحة السلة والدفع -->
+    <section id="page-checkout" class="hidden max-w-2xl mx-auto space-y-6">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xl">
+        <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-cart-shopping text-green-500"></i> سلة التسوق
+        </h3>
+        <div id="cart-items-list" class="space-y-3 mb-4 max-h-60 overflow-y-auto"></div>
+
+        <div class="border-t border-zinc-800 pt-3 space-y-1.5 text-xs">
+          <div class="flex justify-between text-zinc-400"><span>المجموع:</span> <span id="subtotal-price" class="text-white font-bold">0 ج.م</span></div>
+          <div class="flex justify-between text-zinc-400"><span>الشحن:</span> <span class="text-white font-bold">150 ج.م</span></div>
+          <div class="flex justify-between text-sm font-black text-white pt-2 border-t border-zinc-800">
+            <span>الإجمالي النهائي:</span> <span id="grand-total" class="text-green-500">150 ج.م</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xl">
+        <h3 class="text-base font-bold text-white mb-3">بيانات التوصيل وإتمام الطلب</h3>
+        <form onsubmit="submitOrder(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block text-zinc-400 mb-1">الاسم بالكامل *</label>
+            <input type="text" id="cust-name" required placeholder="محمد أحمد" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-white focus:border-green-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-zinc-400 mb-1">رقم الهاتف (واتساب) *</label>
+            <input type="tel" id="cust-phone" required placeholder="01xxxxxxxxx" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-white focus:border-green-500 focus:outline-none" dir="ltr">
+          </div>
+          <div>
+            <label class="block text-zinc-400 mb-1">العنوان التفصيلي *</label>
+            <textarea id="cust-address" required rows="2" placeholder="المحافظة - المدينة - الشارع" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-white focus:border-green-500 focus:outline-none"></textarea>
+          </div>
+          <div>
+            <label class="block text-zinc-400 mb-1">طريقة الدفع *</label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="p-2.5 bg-zinc-950 border border-zinc-800 rounded-xl cursor-pointer flex items-center gap-2">
+                <input type="radio" name="pay" value="عند الاستلام" checked onchange="toggleInsta(false)"> كاش عند الاستلام
+              </label>
+              <label class="p-2.5 bg-zinc-950 border border-zinc-800 rounded-xl cursor-pointer flex items-center gap-2">
+                <input type="radio" name="pay" value="InstaPay" onchange="toggleInsta(true)"> InstaPay
+              </label>
+            </div>
+            <div id="insta-box" class="hidden mt-2 p-3 bg-blue-950/40 border border-blue-900 rounded-xl text-blue-200">
+              تحويل عبر InstaPay للرقم: <span class="font-mono font-bold text-white bg-blue-900 px-2 py-0.5 rounded">01018481035</span>
+            </div>
+          </div>
+          <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-black font-extrabold py-3 rounded-xl flex items-center justify-center gap-2 mt-4 text-sm">
+            <i class="fa-brands fa-whatsapp text-base"></i> إرسال الطلب عبر الواتساب
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- صفحة الإدارة المبسطة -->
+    <section id="page-admin" class="hidden max-w-xl mx-auto space-y-4">
+      <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl">
+        <h3 class="text-base font-bold text-white mb-2">إدارة المنتجات</h3>
+        <p class="text-xs text-zinc-400 mb-4">أضف منتجات جديدة لتظهر مباشرة للعملاء.</p>
+        <form onsubmit="addNewProduct(event)" class="space-y-3 text-xs">
+          <input type="text" id="new-p-name" required placeholder="اسم المنتج" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-white">
+          <input type="number" id="new-p-price" required placeholder="السعر (ج.م)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-white">
+          <input type="url" id="new-p-img" required placeholder="رابط الصورة (URL)" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-white" dir="ltr">
+          <button type="submit" class="w-full bg-green-500 text-black font-bold py-2.5 rounded-xl">إضافة المنتج</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-zinc-800 py-4 text-center text-xs text-zinc-500">
+    <p>Joe Store &copy; 2026 - جميع الحقوق محفوظة</p>
+  </footer>
+
+  <!-- كود الجافاسكريبت البرمجي الآمن والمتوافق مع كل الهواتف -->
+  <script>
+    const SHIPPING = 150;
+    const WA_NUMBER = "201515746716";
+
+    let products = JSON.parse(localStorage.getItem('joe_prods')) || [
+      { id: '1', name: 'ساعة ذكية Smart Watch Ultra', price: 650, img: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400&q=80' },
+      { id: '2', name: 'سماعة لاسلكية AirPods Pro 2', price: 450, img: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&q=80' }
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('joe_cart')) || [];
+
+    function switchPage(page) {
+      document.getElementById('page-products').classList.add('hidden');
+      document.getElementById('page-checkout').classList.add('hidden');
+      document.getElementById('page-admin').classList.add('hidden');
+
+      if (page === 'products') document.getElementById('page-products').classList.remove('hidden');
+      if (page === 'checkout') { document.getElementById('page-checkout').classList.remove('hidden'); updateCartUI(); }
+      if (page === 'admin') document.getElementById('page-admin').classList.remove('hidden');
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('products-grid');
+      if (!grid) return;
+      grid.innerHTML = products.map(p => `
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-3 flex flex-col justify-between">
+          <div>
+            <img src="${p.img}" class="w-full h-40 object-cover rounded-xl mb-3 bg-zinc-950" onerror="this.src='https://images.unsplash.com/photo-1560343090-f0409e92791a?w=400&q=80'">
+            <h4 class="font-bold text-xs text-white">${p.name}</h4>
+            <p class="text-green-500 font-extrabold text-sm mt-1">${p.price} ج.م</p>
+          </div>
+          <button onclick="addToCart('${p.id}')" class="mt-3 w-full bg-zinc-800 hover:bg-green-500 hover:text-black text-xs font-bold py-2 rounded-xl transition-all">
+            <i class="fa-solid fa-cart-plus ml-1"></i> أضف للسلة
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      const exist = cart.find(x => x.id === id);
+      if (exist) exist.qty += 1;
+      else cart.push({ ...p, qty: 1 });
+      
+      localStorage.setItem('joe_cart', JSON.stringify(cart));
+      updateCartBadge();
+      alertUser("تمت الإضافة للسلة بنجاح!");
+    }
+
+    function updateCartBadge() {
+      const total = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('nav-cart-badge').innerText = total;
+    }
+
+    function updateCartUI() {
+      const list = document.getElementById('cart-items-list');
+      const sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+      const grand = sub > 0 ? sub + SHIPPING : 0;
+
+      document.getElementById('subtotal-price').innerText = sub + ' ج.م';
+      document.getElementById('grand-total').innerText = grand + ' ج.م';
+
+      if (cart.length === 0) {
+        list.innerHTML = `<p class="text-center text-zinc-500 py-4 text-xs">السلة فارغة حالياً</p>`;
+        return;
+      }
+
+      list.innerHTML = cart.map(i => `
+        <div class="flex justify-between items-center bg-zinc-950 p-2.5 rounded-xl border border-zinc-800">
+          <div>
+            <p class="font-bold text-white text-xs">${i.name}</p>
+            <p class="text-[10px] text-green-500">${i.price} ج.م × ${i.qty}</p>
+          </div>
+          <button onclick="removeFromCart('${i.id}')" class="text-red-400 p-1"><i class="fa-solid fa-trash text-xs"></i></button>
+        </div>
+      `).join('');
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(i => i.id !== id);
+      localStorage.setItem('joe_cart', JSON.stringify(cart));
+      updateCartUI();
+      updateCartBadge();
+    }
+
+    function toggleInsta(show) {
+      const box = document.getElementById('insta-box');
+      if (show) box.classList.remove('hidden');
+      else box.classList.add('hidden');
+    }
+
+    function submitOrder(e) {
+      e.preventDefault();
+      if (cart.length === 0) { alertUser("السلة فارغة!"); return; }
+
+      const name = document.getElementById('cust-name').value;
+      const phone = document.getElementById('cust-phone').value;
+      const addr = document.getElementById('cust-address').value;
+      const pay = document.querySelector('input[name="pay"]:checked').value;
+      const sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+      const total = sub + SHIPPING;
+      const orderId = "JOE-" + Math.floor(1000 + Math.random() * 9000);
+
+      let msg = `🛒 *طلب جديد من متجر JOE*%0A`;
+      msg += `🆔 *رقم الطلب:* ${orderId}%0A%0A`;
+      cart.forEach(i => { msg += `• ${i.name} (x${i.qty}) - ${i.price * i.qty} ج.م%0A`; });
+      msg += `%0A💰 *الإجمالي الكلي (شامل الشحن):* ${total} ج.م%0A`;
+      msg += `👤 *الاسم:* ${name}%0A📞 *الهاتف:* ${phone}%0A📍 *العنوان:* ${addr}%0A💳 *الدفع:* ${pay}`;
+
+      window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
+      
+      cart = [];
+      localStorage.removeItem('joe_cart');
+      updateCartBadge();
+      switchPage('products');
+    }
+
+    function addNewProduct(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-p-name').value;
+      const price = parseFloat(document.getElementById('new-p-price').value);
+      const img = document.getElementById('new-p-img').value;
+
+      products.unshift({ id: 'p-' + Date.now(), name, price, img });
+      localStorage.setItem('joe_prods', JSON.stringify(products));
+      renderProducts();
+      alertUser("تم إضافة المنتج بنجاح!");
+      switchPage('products');
+    }
+
+    function alertUser(txt) {
+      // بديل آمن وسريع بدون استخدام alert الممنوعة
+      const div = document.createElement('div');
+      div.className = "fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-500 text-black px-4 py-2 rounded-xl text-xs font-black z-50 shadow-lg";
+      div.innerText = txt;
+      document.body.appendChild(div);
+      setTimeout(() => div.remove(), 2500);
+    }
+
+    window.onload = () => {
+      renderProducts();
+      updateCartBadge();
+    };
+  </script>
+</body>
+</html>
